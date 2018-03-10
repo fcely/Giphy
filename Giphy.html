@@ -1,0 +1,158 @@
+
+
+<html>
+    
+<head>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+    <title>
+        Fun
+    </title>
+
+</head>
+
+
+
+<body>
+
+<div id='buttons'>
+
+
+</div>
+
+
+<div id='searchbar' class='row ml-2 mr-2'>
+
+
+        <form class="mt-4 ml-4">
+                <span id="topicbar"> <input id="newtopic" type="text" ><input class="mr-4" id="addtopic" value="Add Item" type="submit"></span>
+                Add Any topic you will like to see. Then click on the buttons, to animate click on the image
+        </form>
+
+</div>
+
+
+
+<div id='videodiv'>
+
+    </div>
+    
+
+</body>
+
+
+
+</html>
+
+
+<script>
+
+    var topics=["horses","golf","cars","piano","kitchen"]
+
+    reloadscreen()
+    
+    
+    
+
+
+$(document).on("click",'#addtopic',function() {
+    event.preventDefault()
+
+if ($('#newtopic').val().trim()!=''){
+var topic= $('#newtopic').val().trim()
+topics.push(topic)
+$('.usertopics').remove()
+reloadscreen()
+}
+})
+
+
+
+$(document).on("click",'.usertopics',function() {
+
+
+URLquery='https://api.giphy.com/v1/gifs/search?api_key=p7TNGIKF5KB6Mu4YSHq7G6BYqdMYgfCZ&q='+$(this).attr('data')+'&limit=10&offset=0&rating=G&lang=en'
+
+$.ajax({
+      url: URLquery,
+      method: 'GET'
+    }).then(function(response) {
+
+
+for(j=0;j<response.data.length;j++){
+var img = $('<img>')
+img.addClass('giphys m-2')
+img.attr('id' ,j)
+img.attr('src', response.data[j].images.fixed_width_still.url)
+img.attr('data_still', response.data[j].images.fixed_width_still.url)
+img.attr('data_status', 0)
+img.attr('data', response.data[j].images.fixed_width.url)
+
+
+$('#videodiv').prepend(img)
+}
+
+      console.log(response);
+    })
+
+
+})
+
+
+
+
+
+$(document).on("click",'.giphys',function() {
+
+if( $(this).attr('data_status')==0){
+  
+    $(this).attr('src',$(this).attr('data'))
+    $(this).attr('data_status',1)
+}else {
+  
+    $(this).attr('src',$(this).attr('data_still'))
+    $(this).attr('data_status',0)
+}
+
+
+})
+
+
+
+
+
+
+function reloadscreen(){
+for (i=0; i<topics.length ; i++){
+var button=$('<button>')
+button.attr('id',i)
+button.addClass('usertopics m-1 btn btn-info')
+button.attr('data',topics[i])
+button.append(topics[i])
+$('#buttons').append(button)
+}
+
+
+}
+
+
+</script>
+
+
+<style>
+
+    #searchbar{
+
+background-color: darkblue;
+color: white;
+
+    }
+
+    .inputbox{
+
+        left:500px;
+float: right;
+
+    }
+</style>
